@@ -11,410 +11,663 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --cream: #f5f2ec;
-    --cream-dark: #ede9e0;
-    --ink: #2a2620;
-    --ink-mid: #6b6560;
-    --ink-light: #a09b94;
-    --rule: #d8d3cb;
-    --accent: #7a6e5f;
-    --green-dot: #7a9e7e;
-    --orange-dot: #c9845a;
-    --paper: #faf8f4;
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'DM Sans', sans-serif;
-  }
+:root {
+  --cream: #f5f2ec;
+  --cream-dark: #ede9e0;
+  --ink: #2a2620;
+  --ink-mid: #6b6560;
+  --ink-light: #a09b94;
+  --rule: #d8d3cb;
+  --accent: #7a6e5f;
+  --green-dot: #7a9e7e;
+  --orange-dot: #c9845a;
+  --red-dot: #b85c5c;
+  --paper: #faf8f4;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
 
-  html { background: var(--cream); }
+html { background: var(--cream); }
 
-  body {
-    font-family: var(--font-body);
-    background: var(--cream);
-    color: var(--ink);
-    min-height: 100vh;
-    padding: 2rem 1rem 4rem;
-  }
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 2rem 1rem 4rem;
+}
 
-  .page {
-    max-width: 860px;
-    margin: 0 auto;
-    background: var(--paper);
-    border: 0.5px solid var(--rule);
-    padding: 3rem 3.5rem;
-    position: relative;
-  }
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 0.5px solid var(--rule);
+  padding: 3rem 3.5rem;
+  position: relative;
+}
 
-  /* Page header */
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    border-bottom: 1.5px solid var(--ink);
-    padding-bottom: 0.6rem;
-    margin-bottom: 2rem;
-  }
+/* ── Header ─────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 0.6rem;
+}
 
-  .page-title {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: 0.02em;
-    color: var(--ink);
-  }
+.page-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
 
-  .date-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
 
-  .date-nav button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--ink-mid);
-    font-size: 1.1rem;
-    padding: 2px 6px;
-    line-height: 1;
-    transition: color 0.15s;
-  }
-  .date-nav button:hover { color: var(--ink); }
+.week-nav button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-mid);
+  font-size: 1.1rem;
+  padding: 2px 6px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.week-nav button:hover { color: var(--ink); }
 
-  #date-input {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--ink);
-    background: none;
-    border: none;
-    border-bottom: 1px solid var(--rule);
-    padding: 2px 4px;
-    width: 130px;
-    text-align: center;
-    cursor: pointer;
-    outline: none;
-  }
-  #date-input:focus { border-bottom-color: var(--ink); }
+#week-label {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
 
-  /* Two-column layout */
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 3rem;
-    margin-bottom: 2rem;
-  }
+/* ── Page tabs ───────────────────────────────────── */
+.page-tabs {
+  display: flex;
+  border-bottom: 0.5px solid var(--rule);
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.page-tabs::-webkit-scrollbar { display: none; }
 
-  /* Section labels */
-  .section-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink);
-    margin-bottom: 0.5rem;
-  }
+.tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  padding: 0.65rem 0.85rem 0.45rem;
+  white-space: nowrap;
+  transition: all 0.15s;
+  margin-bottom: -0.5px;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--ink); border-bottom-color: var(--ink); }
 
-  .section-label .dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .dot-green { background: var(--green-dot); }
-  .dot-orange { background: var(--orange-dot); }
+/* ── Page sections ───────────────────────────────── */
+.page-section { display: none; }
+.page-section.active { display: block; }
 
-  .section-sublabel {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 0.85rem;
-    font-weight: 300;
-    letter-spacing: 0;
-    color: var(--ink-mid);
-    text-transform: none;
-    margin-left: 2px;
-  }
+/* ── Section labels ──────────────────────────────── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
 
-  /* Priorities */
-  .priorities { margin-bottom: 2rem; }
+.section-label .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-green  { background: var(--green-dot); }
+.dot-orange { background: var(--orange-dot); }
+.dot-red    { background: var(--red-dot); }
 
-  .priority-item {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.35rem 0;
-    border-bottom: 0.5px solid var(--rule);
-  }
-  .priority-item:first-child { background: var(--cream-dark); padding-left: 0.5rem; border-radius: 2px 2px 0 0; }
+.section-sublabel {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0;
+  color: var(--ink-mid);
+  text-transform: none;
+  margin-left: 2px;
+}
 
-  .priority-item input[type="checkbox"],
-  .task-item input[type="checkbox"] {
-    appearance: none;
-    width: 13px;
-    height: 13px;
-    border: 1px solid var(--ink-light);
-    border-radius: 50%;
-    cursor: pointer;
-    flex-shrink: 0;
-    position: relative;
-    transition: all 0.15s;
-  }
-  .priority-item input[type="checkbox"]:checked,
-  .task-item input[type="checkbox"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-  .priority-item input[type="checkbox"]:checked::after,
-  .task-item input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 3px; top: 1px;
-    width: 5px; height: 8px;
-    border: 1.5px solid white;
-    border-left: none; border-top: none;
-    transform: rotate(45deg);
-  }
+/* ── Shared inputs ───────────────────────────────── */
+.priority-item input[type="checkbox"],
+.task-item input[type="checkbox"],
+.wp-task-item input[type="checkbox"],
+.habit-day-check {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--ink-light);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.15s;
+}
+.priority-item input[type="checkbox"]:checked,
+.task-item input[type="checkbox"]:checked,
+.wp-task-item input[type="checkbox"]:checked,
+.habit-day-check:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.priority-item input[type="checkbox"]:checked::after,
+.task-item input[type="checkbox"]:checked::after,
+.wp-task-item input[type="checkbox"]:checked::after,
+.habit-day-check:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px; top: 1px;
+  width: 5px; height: 8px;
+  border: 1.5px solid white;
+  border-left: none; border-top: none;
+  transform: rotate(45deg);
+}
 
-  .priority-item input[type="text"],
-  .task-item input[type="text"] {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--ink);
-    padding: 0;
-  }
-  .priority-item input[type="text"]::placeholder,
-  .task-item input[type="text"]::placeholder { color: var(--ink-light); }
+.line-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink);
+  padding: 0;
+  min-width: 0;
+}
+.line-input::placeholder { color: var(--ink-light); }
+.line-input.done { text-decoration: line-through; color: var(--ink-light); }
 
-  .priority-item input[type="text"].done,
-  .task-item input[type="text"].done {
-    text-decoration: line-through;
-    color: var(--ink-light);
-  }
+.notes-area {
+  width: 100%;
+  min-height: 80px;
+  background: none;
+  border: 0.5px solid var(--rule);
+  padding: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink);
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+}
+.notes-area:focus { border-color: var(--ink-mid); }
+.notes-area::placeholder { color: var(--ink-light); }
 
-  /* Other tasks */
-  .tasks-section { margin-bottom: 2rem; }
-  .tasks-section .section-label { margin-top: 1.5rem; }
+/* ════════════════════════════════════════════════════
+   WEEKLY PLANNING
+══════════════════════════════════════════════════════ */
+.wp-priorities { margin-bottom: 2rem; }
 
-  .task-item {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.3rem 0;
-    border-bottom: 0.5px solid var(--rule);
-  }
+.priority-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  border-bottom: 0.5px solid var(--rule);
+}
+.priority-item.first {
+  background: var(--cream-dark);
+  padding-left: 0.5rem;
+  border-radius: 2px 2px 0 0;
+}
+.priority-item input[type="text"] {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink);
+  padding: 0;
+}
+.priority-item input[type="text"]::placeholder { color: var(--ink-light); }
+.priority-item input[type="text"].done { text-decoration: line-through; color: var(--ink-light); }
 
-  .add-task-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 0.75rem;
-    color: var(--ink-light);
-    padding: 0.4rem 0;
-    font-family: var(--font-body);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: color 0.15s;
-  }
-  .add-task-btn:hover { color: var(--ink); }
+.wp-mid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 3rem;
+  margin-bottom: 2rem;
+}
 
-  .remove-task-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--rule);
-    font-size: 0.9rem;
-    line-height: 1;
-    padding: 0 2px;
-    transition: color 0.15s;
-    flex-shrink: 0;
-  }
-  .remove-task-btn:hover { color: var(--ink-mid); }
+.wp-task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  border-bottom: 0.5px solid var(--rule);
+}
 
-  /* Plan (time blocks) */
-  .plan-section { }
+/* Habit tracker */
+.habit-days-header {
+  display: grid;
+  grid-template-columns: 1fr repeat(7, 18px);
+  gap: 0 5px;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+.habit-day-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  text-align: center;
+}
 
-  .time-block {
-    display: grid;
-    grid-template-columns: 44px 1fr;
-    border-bottom: 0.5px solid var(--rule);
-    min-height: 26px;
-  }
+.habit-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(7, 18px);
+  gap: 0 5px;
+  align-items: center;
+  padding: 0.28rem 0;
+  border-bottom: 0.5px solid var(--rule);
+}
+.habit-row input[type="text"] {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--ink);
+  padding: 0;
+  min-width: 0;
+}
+.habit-row input[type="text"]::placeholder { color: var(--ink-light); }
+.habit-day-check { justify-self: center; }
 
-  .time-label {
-    font-size: 0.68rem;
-    color: var(--ink-light);
-    padding: 5px 0 3px;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    line-height: 1;
-    align-self: start;
-    padding-top: 6px;
-  }
+/* ════════════════════════════════════════════════════
+   WEEKLY OVERVIEW
+══════════════════════════════════════════════════════ */
+.overview-sublabel {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--ink-mid);
+  margin-bottom: 1.25rem;
+}
 
-  .time-block input[type="text"] {
-    background: none;
-    border: none;
-    outline: none;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    color: var(--ink);
-    padding: 5px 0 3px 6px;
-    width: 100%;
-  }
-  .time-block input[type="text"]::placeholder { color: var(--rule); }
+.overview-day {
+  padding: 0.6rem 0 0.4rem;
+  border-bottom: 0.5px solid var(--rule);
+}
+.overview-day:last-child { border-bottom: none; }
 
-  /* Full-width sections */
-  .full-width { margin-bottom: 2rem; }
+.overview-day-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 0.3rem;
+}
 
-  .notes-area {
-    width: 100%;
-    min-height: 80px;
-    background: none;
-    border: 0.5px solid var(--rule);
-    padding: 0.75rem;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--ink);
-    resize: vertical;
-    outline: none;
-    line-height: 1.6;
-  }
-  .notes-area:focus { border-color: var(--ink-mid); }
-  .notes-area::placeholder { color: var(--ink-light); }
+.overview-day textarea {
+  width: 100%;
+  min-height: 48px;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink);
+  resize: none;
+  line-height: 1.6;
+  padding: 0;
+}
+.overview-day textarea::placeholder { color: var(--ink-light); }
 
-  /* Reflect */
-  .reflect-section {
-    border-top: 1px solid var(--rule);
-    padding-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+/* ════════════════════════════════════════════════════
+   DAILY PLANNER
+══════════════════════════════════════════════════════ */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 3rem;
+  margin-bottom: 2rem;
+}
 
-  .reflect-header {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
+.priorities { margin-bottom: 2rem; }
 
-  .score-circles {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
+.tasks-section { margin-bottom: 2rem; }
+.tasks-section .section-label { margin-top: 1.5rem; }
 
-  .score-circle {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 1.5px solid var(--rule);
-    background: none;
-    cursor: pointer;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-  .score-circle:hover { border-color: var(--orange-dot); }
-  .score-circle.active { background: var(--orange-dot); border-color: var(--orange-dot); }
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  border-bottom: 0.5px solid var(--rule);
+}
+.task-item input[type="text"] {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink);
+  padding: 0;
+}
+.task-item input[type="text"]::placeholder { color: var(--ink-light); }
+.task-item input[type="text"].done { text-decoration: line-through; color: var(--ink-light); }
 
-  .score-label {
-    color: var(--ink-light);
-    font-style: italic;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-  }
+.add-task-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--ink-light);
+  padding: 0.4rem 0;
+  font-family: var(--font-body);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+}
+.add-task-btn:hover { color: var(--ink); }
 
-  /* Data mgmt bar */
-  .data-bar {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: flex-end;
-    margin-top: 2.5rem;
-    padding-top: 1rem;
-    border-top: 0.5px solid var(--rule);
-    flex-wrap: wrap;
-  }
+.remove-task-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--rule);
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.remove-task-btn:hover { color: var(--ink-mid); }
 
-  .data-bar button, .data-bar label {
-    background: none;
-    border: 0.5px solid var(--rule);
-    color: var(--ink-mid);
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    padding: 5px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-    border-radius: 1px;
-  }
-  .data-bar button:hover, .data-bar label:hover {
-    border-color: var(--ink-mid);
-    color: var(--ink);
-  }
+.time-block {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  border-bottom: 0.5px solid var(--rule);
+  min-height: 26px;
+}
+.time-label {
+  font-size: 0.68rem;
+  color: var(--ink-light);
+  padding-top: 6px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  align-self: start;
+}
+.time-block input[type="text"] {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--ink);
+  padding: 5px 0 3px 6px;
+  width: 100%;
+}
+.time-block input[type="text"]::placeholder { color: var(--rule); }
 
-  .save-indicator {
-    font-size: 0.72rem;
-    color: var(--ink-light);
-    font-style: italic;
-    font-family: var(--font-display);
-    margin-right: auto;
-  }
-  .save-indicator.saved { color: var(--green-dot); }
+.full-width { margin-bottom: 2rem; }
 
-  /* Page number */
-  .page-num {
-    position: absolute;
-    bottom: 1.5rem;
-    right: 2rem;
-    font-size: 0.75rem;
-    color: var(--ink-light);
-    font-family: var(--font-display);
-    font-style: italic;
-  }
+.reflect-section {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.reflect-header { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
 
-  @media (max-width: 640px) {
-    .page { padding: 1.5rem 1.25rem; }
-    .two-col { grid-template-columns: 1fr; gap: 0; }
-    .plan-section { margin-top: 1.5rem; }
-  }
+.score-circles { display: flex; gap: 0.5rem; align-items: center; }
+.score-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--rule);
+  background: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.score-circle:hover { border-color: var(--orange-dot); }
+.score-circle.active { background: var(--orange-dot); border-color: var(--orange-dot); }
+
+.score-label {
+  color: var(--ink-light);
+  font-style: italic;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+}
+
+/* ════════════════════════════════════════════════════
+   WEEKLY REFLECTION
+══════════════════════════════════════════════════════ */
+.wins-box {
+  border: 0.5px solid var(--rule);
+  padding: 0.6rem 1rem;
+  margin-bottom: 2rem;
+}
+.win-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  border-bottom: 0.5px solid var(--rule);
+}
+.win-row:last-child { border-bottom: none; }
+.win-bullet { font-size: 0.7rem; color: var(--ink-light); flex-shrink: 0; line-height: 1; }
+
+.reflect-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 3rem;
+  margin-bottom: 2rem;
+}
+.reflect-line-item {
+  display: flex;
+  align-items: center;
+  padding: 0.3rem 0;
+  border-bottom: 0.5px solid var(--rule);
+}
+
+/* ── Data bar ────────────────────────────────────── */
+.data-bar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 0.5px solid var(--rule);
+  flex-wrap: wrap;
+}
+.data-bar button, .data-bar label {
+  background: none;
+  border: 0.5px solid var(--rule);
+  color: var(--ink-mid);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-radius: 1px;
+}
+.data-bar button:hover, .data-bar label:hover { border-color: var(--ink-mid); color: var(--ink); }
+
+.save-indicator {
+  font-size: 0.72rem;
+  color: var(--ink-light);
+  font-style: italic;
+  font-family: var(--font-display);
+  margin-right: auto;
+}
+.save-indicator.saved { color: var(--green-dot); }
+
+.page-num {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+  font-size: 0.75rem;
+  color: var(--ink-light);
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+/* ── Mobile ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  .page { padding: 1.5rem 1.25rem; }
+  .two-col, .wp-mid, .reflect-two-col { grid-template-columns: 1fr; gap: 0; }
+  .plan-section { margin-top: 1.5rem; }
+  .tab { padding: 0.65rem 0.55rem 0.45rem; font-size: 0.62rem; }
+}
 </style>
 </head>
 <body>
 <div class="page">
 
+  <!-- Header -->
   <div class="page-header">
-    <div class="page-title">Daily Planning</div>
-    <div class="date-nav">
-      <button id="prev-day" title="Previous day">&#8249;</button>
-      <input type="date" id="date-input">
-      <button id="next-day" title="Next day">&#8250;</button>
+    <div class="page-title" id="page-title">Weekly Planning</div>
+    <div class="week-nav">
+      <button id="prev-week" title="Previous week">&#8249;</button>
+      <span id="week-label"></span>
+      <button id="next-week" title="Next week">&#8250;</button>
     </div>
   </div>
 
-  <div class="two-col">
+  <!-- Tabs -->
+  <div class="page-tabs">
+    <button class="tab" data-page="0">Planning</button>
+    <button class="tab" data-page="1">Overview</button>
+    <button class="tab" data-page="2">Mon</button>
+    <button class="tab" data-page="3">Tue</button>
+    <button class="tab" data-page="4">Wed</button>
+    <button class="tab" data-page="5">Thu</button>
+    <button class="tab" data-page="6">Fri</button>
+    <button class="tab" data-page="7">Sat</button>
+    <button class="tab" data-page="8">Sun</button>
+    <button class="tab" data-page="9">Reflection</button>
+  </div>
 
-    <!-- LEFT COLUMN -->
-    <div>
-      <!-- Priorities -->
-      <div class="priorities">
+  <!-- ══════════════════════════════════════════════
+       PAGE 0 — Weekly Planning
+  ═══════════════════════════════════════════════════ -->
+  <div id="section-0" class="page-section">
+
+    <div class="wp-priorities">
+      <div class="section-label">
+        <span class="dot dot-green"></span>
+        Priorities
+        <span class="section-sublabel">your goals for the week</span>
+      </div>
+      <div class="priority-item first">
+        <input type="checkbox" id="wp-p0-check">
+        <input type="text" id="wp-p0-text" placeholder="First priority…">
+      </div>
+      <div class="priority-item">
+        <input type="checkbox" id="wp-p1-check">
+        <input type="text" id="wp-p1-text" placeholder="Second priority…">
+      </div>
+      <div class="priority-item">
+        <input type="checkbox" id="wp-p2-check">
+        <input type="text" id="wp-p2-text" placeholder="Third priority…">
+      </div>
+    </div>
+
+    <div class="wp-mid">
+      <!-- Other tasks -->
+      <div>
         <div class="section-label">
-          <span class="dot dot-green"></span>
-          Priorities
-          <span class="section-sublabel">today's top three tasks</span>
+          Other Tasks
+          <span class="section-sublabel">to focus on this week</span>
         </div>
-        <div id="priorities-list">
-          <div class="priority-item">
+        <div class="wp-task-item"><input type="checkbox" id="wp-t0-check"><input type="text" class="line-input" id="wp-t0-text" placeholder="Task…"></div>
+        <div class="wp-task-item"><input type="checkbox" id="wp-t1-check"><input type="text" class="line-input" id="wp-t1-text" placeholder="Task…"></div>
+        <div class="wp-task-item"><input type="checkbox" id="wp-t2-check"><input type="text" class="line-input" id="wp-t2-text" placeholder="Task…"></div>
+        <div class="wp-task-item"><input type="checkbox" id="wp-t3-check"><input type="text" class="line-input" id="wp-t3-text" placeholder="Task…"></div>
+        <div class="wp-task-item"><input type="checkbox" id="wp-t4-check"><input type="text" class="line-input" id="wp-t4-text" placeholder="Task…"></div>
+      </div>
+
+      <!-- Habit tracker -->
+      <div>
+        <div class="section-label">
+          Habit <span class="section-sublabel">tracker</span>
+        </div>
+        <div class="habit-days-header">
+          <span></span>
+          <span class="habit-day-label">M</span>
+          <span class="habit-day-label">T</span>
+          <span class="habit-day-label">W</span>
+          <span class="habit-day-label">T</span>
+          <span class="habit-day-label">F</span>
+          <span class="habit-day-label">S</span>
+          <span class="habit-day-label">S</span>
+        </div>
+        <div id="habits-list"></div>
+      </div>
+    </div>
+
+    <div class="section-label">
+      Notes
+      <span class="section-sublabel">for the week</span>
+    </div>
+    <textarea class="notes-area" id="wp-notes" placeholder="Notes…"></textarea>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 1 — Weekly Overview
+  ═══════════════════════════════════════════════════ -->
+  <div id="section-1" class="page-section">
+    <p class="overview-sublabel">note important events and deadlines</p>
+    <div id="overview-days"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PAGES 2–8 — Daily Planner (shared DOM)
+  ═══════════════════════════════════════════════════ -->
+  <div id="section-daily" class="page-section">
+    <div class="two-col">
+
+      <!-- Left -->
+      <div>
+        <div class="priorities">
+          <div class="section-label">
+            <span class="dot dot-green"></span>
+            Priorities
+            <span class="section-sublabel">today's top three tasks</span>
+          </div>
+          <div class="priority-item first">
             <input type="checkbox" id="p0-check">
             <input type="text" id="p0-text" placeholder="First priority…">
           </div>
@@ -427,58 +680,104 @@
             <input type="text" id="p2-text" placeholder="Third priority…">
           </div>
         </div>
-      </div>
 
-      <!-- Other tasks -->
-      <div class="tasks-section">
-        <div class="section-label">
-          Other Tasks
-          <span class="section-sublabel">to do today</span>
+        <div class="tasks-section">
+          <div class="section-label">
+            Other Tasks
+            <span class="section-sublabel">to do today</span>
+          </div>
+          <div id="tasks-list"></div>
+          <button class="add-task-btn" id="add-task-btn">+ add task</button>
         </div>
-        <div id="tasks-list"></div>
-        <button class="add-task-btn" id="add-task-btn">+ add task</button>
       </div>
+
+      <!-- Right: Plan -->
+      <div class="plan-section">
+        <div class="section-label">
+          <span class="dot dot-green"></span>
+          Plan
+          <span class="section-sublabel">assign time to tasks and rest</span>
+        </div>
+        <div id="time-blocks"></div>
+      </div>
+
     </div>
 
-    <!-- RIGHT COLUMN: Plan -->
-    <div class="plan-section">
+    <div class="full-width">
       <div class="section-label">
-        <span class="dot dot-green"></span>
-        Plan
-        <span class="section-sublabel">assign time to tasks and rest</span>
+        Notes
+        <span class="section-sublabel">for the day</span>
       </div>
-      <div id="time-blocks"></div>
+      <textarea class="notes-area" id="notes" placeholder="Notes…"></textarea>
     </div>
 
-  </div>
-
-  <!-- Notes -->
-  <div class="full-width">
-    <div class="section-label">
-      Notes
-      <span class="section-sublabel">for the day</span>
+    <div class="reflect-section">
+      <div class="section-label">
+        <span class="dot dot-orange"></span>
+        Reflect
+        <span class="section-sublabel">how was your day?</span>
+      </div>
+      <div class="reflect-header">
+        <div class="score-circles" id="score-circles">
+          <span class="score-circle" data-score="1"></span>
+          <span class="score-circle" data-score="2"></span>
+          <span class="score-circle" data-score="3"></span>
+          <span class="score-circle" data-score="4"></span>
+          <span class="score-circle" data-score="5"></span>
+        </div>
+        <span class="score-label" id="score-label">—</span>
+      </div>
+      <textarea class="notes-area" id="reflect-notes" placeholder="Reflections on the day…" style="min-height:60px;"></textarea>
     </div>
-    <textarea class="notes-area" id="notes" placeholder="Notes…"></textarea>
   </div>
 
-  <!-- Reflect -->
-  <div class="reflect-section">
+  <!-- ══════════════════════════════════════════════
+       PAGE 9 — Weekly Reflection
+  ═══════════════════════════════════════════════════ -->
+  <div id="section-9" class="page-section">
+
+    <div style="margin-bottom:2rem;">
+      <div class="section-label" style="margin-bottom:0.75rem;">Wins of the Week</div>
+      <div class="wins-box">
+        <div class="win-row"><span class="win-bullet">•</span><input type="text" class="line-input" id="wr-win0" placeholder="A win from this week…"></div>
+        <div class="win-row"><span class="win-bullet">•</span><input type="text" class="line-input" id="wr-win1" placeholder="A win from this week…"></div>
+        <div class="win-row"><span class="win-bullet">•</span><input type="text" class="line-input" id="wr-win2" placeholder="A win from this week…"></div>
+      </div>
+    </div>
+
+    <div class="reflect-two-col">
+      <div>
+        <div class="section-label">
+          <span class="dot dot-red"></span>
+          Incomplete Tasks
+          <span class="section-sublabel">to carry over</span>
+        </div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-inc0" placeholder="Task…"></div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-inc1" placeholder="Task…"></div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-inc2" placeholder="Task…"></div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-inc3" placeholder="Task…"></div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-inc4" placeholder="Task…"></div>
+      </div>
+      <div>
+        <div class="section-label">
+          <span class="dot dot-green"></span>
+          Next Week
+          <span class="section-sublabel">what's your focus?</span>
+        </div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-nw0" placeholder="Focus…"></div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-nw1" placeholder="Focus…"></div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-nw2" placeholder="Focus…"></div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-nw3" placeholder="Focus…"></div>
+        <div class="reflect-line-item"><input type="text" class="line-input" id="wr-nw4" placeholder="Focus…"></div>
+      </div>
+    </div>
+
     <div class="section-label">
       <span class="dot dot-orange"></span>
       Reflect
-      <span class="section-sublabel">how was your day?</span>
+      <span class="section-sublabel">how did your weekly goals go?</span>
     </div>
-    <div class="reflect-header">
-      <div class="score-circles" id="score-circles">
-        <span class="score-circle" data-score="1"></span>
-        <span class="score-circle" data-score="2"></span>
-        <span class="score-circle" data-score="3"></span>
-        <span class="score-circle" data-score="4"></span>
-        <span class="score-circle" data-score="5"></span>
-      </div>
-      <span class="score-label" id="score-label">—</span>
-    </div>
-    <textarea class="notes-area" id="reflect-notes" placeholder="Reflections on the day…" style="min-height:60px;"></textarea>
+    <textarea class="notes-area" id="wr-reflect" placeholder="How did the week go…" style="min-height:100px;"></textarea>
   </div>
 
   <!-- Data bar -->
@@ -493,23 +792,75 @@
 </div>
 
 <script>
-const TIME_START = '04:30';
-const TIME_END   = '22:30';
-const INTERVAL   = 30;
-
+// ── Constants ──────────────────────────────────────────────────────────────────
+const TIME_START   = '04:30';
+const TIME_END     = '22:30';
+const INTERVAL     = 30;
 const SCORE_LABELS = ['', 'Poor', 'Below average', 'Average', 'Good', 'Excellent'];
+const HABIT_COUNT  = 5;
+const OVERVIEW_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
-function timeToMins(t) {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
-}
-function minsToTime(m) {
-  return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+// Page definitions: index 0-1 = weekly pages, 2-8 = Mon-Sun, 9 = reflection
+const PAGE_DEFS = [
+  { label: 'Weekly Planning',   section: 'section-0' },
+  { label: 'Weekly Overview',   section: 'section-1' },
+  { label: 'Monday',            section: 'section-daily', dayOffset: 0 },
+  { label: 'Tuesday',           section: 'section-daily', dayOffset: 1 },
+  { label: 'Wednesday',         section: 'section-daily', dayOffset: 2 },
+  { label: 'Thursday',          section: 'section-daily', dayOffset: 3 },
+  { label: 'Friday',            section: 'section-daily', dayOffset: 4 },
+  { label: 'Saturday',          section: 'section-daily', dayOffset: 5 },
+  { label: 'Sunday',            section: 'section-daily', dayOffset: 6 },
+  { label: 'Weekly Reflection', section: 'section-9' },
+];
+
+// ── State ──────────────────────────────────────────────────────────────────────
+let currentMonday = null;
+let currentPage   = 0;
+let currentScore  = 0;
+
+// ── Utils ──────────────────────────────────────────────────────────────────────
+function timeToMins(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+function minsToTime(m) { return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
+function dateStr(d)    { return d.toISOString().slice(0,10); }
+function todayStr()    { return new Date().toISOString().slice(0,10); }
+function escHtml(s)    { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function getMondayOf(date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const day = d.getDay();
+  d.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
+  return d;
 }
 
+function addDays(date, n) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  d.setDate(d.getDate() + n);
+  return d;
+}
+
+function formatWeekLabel(monday) {
+  const sunday = addDays(monday, 6);
+  const mStr = monday.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const sStr = sunday.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  return `${mStr} – ${sStr}`;
+}
+
+// ── Storage ────────────────────────────────────────────────────────────────────
+function weekKey(type) { return `planner:week:${dateStr(currentMonday)}:${type}`; }
+function dayKey(offset) { return 'planner:' + dateStr(addDays(currentMonday, offset)); }
+
+function load(key) {
+  const raw = localStorage.getItem(key);
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch(e) { return null; }
+}
+function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+// ── Build static DOM ───────────────────────────────────────────────────────────
 function buildTimeBlocks() {
-  const container = document.getElementById('time-blocks');
-  container.innerHTML = '';
+  const c = document.getElementById('time-blocks');
+  c.innerHTML = '';
   let cur = timeToMins(TIME_START);
   const end = timeToMins(TIME_END);
   while (cur <= end) {
@@ -517,95 +868,174 @@ function buildTimeBlocks() {
     const row = document.createElement('div');
     row.className = 'time-block';
     row.innerHTML = `<span class="time-label">${t}</span><input type="text" data-time="${t}" placeholder="">`;
-    container.appendChild(row);
+    c.appendChild(row);
     cur += INTERVAL;
   }
-  container.querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', () => schedSave());
+  c.querySelectorAll('input').forEach(inp => inp.addEventListener('input', schedSave));
+}
+
+function buildHabitRows() {
+  const c = document.getElementById('habits-list');
+  c.innerHTML = '';
+  for (let i = 0; i < HABIT_COUNT; i++) {
+    const row = document.createElement('div');
+    row.className = 'habit-row';
+    let html = `<input type="text" id="habit-${i}-name" placeholder="Habit…">`;
+    for (let d = 0; d < 7; d++) {
+      html += `<input type="checkbox" class="habit-day-check" id="habit-${i}-day-${d}">`;
+    }
+    row.innerHTML = html;
+    c.appendChild(row);
+    row.querySelector('input[type="text"]').addEventListener('input', schedSave);
+    row.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', schedSave));
+  }
+}
+
+function buildOverviewDays() {
+  const c = document.getElementById('overview-days');
+  c.innerHTML = '';
+  OVERVIEW_DAYS.forEach((day, i) => {
+    const div = document.createElement('div');
+    div.className = 'overview-day';
+    div.innerHTML = `<div class="overview-day-label">${day}</div><textarea id="overview-${i}" placeholder="Events, deadlines…"></textarea>`;
+    c.appendChild(div);
+    div.querySelector('textarea').addEventListener('input', schedSave);
   });
 }
 
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
+// ── Gather ─────────────────────────────────────────────────────────────────────
+function gatherWeeklyPlan() {
+  const priorities = [0,1,2].map(i => ({
+    text: document.getElementById(`wp-p${i}-text`).value,
+    done: document.getElementById(`wp-p${i}-check`).checked,
+  }));
+  const tasks = [0,1,2,3,4].map(i => ({
+    text: document.getElementById(`wp-t${i}-text`).value,
+    done: document.getElementById(`wp-t${i}-check`).checked,
+  }));
+  const habits = Array.from({ length: HABIT_COUNT }, (_, i) => ({
+    name: document.getElementById(`habit-${i}-name`).value,
+    days: Array.from({ length: 7 }, (_, d) => document.getElementById(`habit-${i}-day-${d}`).checked),
+  }));
+  return { priorities, tasks, habits, notes: document.getElementById('wp-notes').value };
 }
 
-function storageKey(date) { return 'planner:' + date; }
-
-function emptyDay() {
-  return {
-    priorities: [
-      { text: '', done: false },
-      { text: '', done: false },
-      { text: '', done: false }
-    ],
-    tasks: [],
-    timeBlocks: {},
-    notes: '',
-    score: 0,
-    reflectNotes: ''
-  };
+function gatherWeeklyOverview() {
+  return { days: OVERVIEW_DAYS.map((_, i) => document.getElementById(`overview-${i}`).value) };
 }
 
-function loadDay(date) {
-  const raw = localStorage.getItem(storageKey(date));
-  if (!raw) return emptyDay();
-  try { return JSON.parse(raw); } catch(e) { return emptyDay(); }
-}
-
-function saveDay(date, data) {
-  localStorage.setItem(storageKey(date), JSON.stringify(data));
-}
-
-function gatherData() {
+function gatherDailyData() {
   const priorities = [0,1,2].map(i => ({
     text: document.getElementById(`p${i}-text`).value,
-    done: document.getElementById(`p${i}-check`).checked
+    done: document.getElementById(`p${i}-check`).checked,
   }));
   const tasks = Array.from(document.querySelectorAll('#tasks-list .task-item')).map(el => ({
     text: el.querySelector('input[type="text"]').value,
-    done: el.querySelector('input[type="checkbox"]').checked
+    done: el.querySelector('input[type="checkbox"]').checked,
   }));
   const timeBlocks = {};
   document.querySelectorAll('#time-blocks input[type="text"]').forEach(inp => {
     if (inp.value.trim()) timeBlocks[inp.dataset.time] = inp.value;
   });
   return {
-    priorities,
-    tasks,
-    timeBlocks,
+    priorities, tasks, timeBlocks,
     notes: document.getElementById('notes').value,
     score: currentScore,
-    reflectNotes: document.getElementById('reflect-notes').value
+    reflectNotes: document.getElementById('reflect-notes').value,
   };
 }
 
-function renderDay(data) {
-  // Priorities
-  [0,1,2].forEach(i => {
-    const p = data.priorities[i] || { text: '', done: false };
-    document.getElementById(`p${i}-text`).value = p.text;
-    document.getElementById(`p${i}-check`).checked = p.done;
-    document.getElementById(`p${i}-text`).classList.toggle('done', p.done);
-  });
-  // Tasks
-  const tl = document.getElementById('tasks-list');
-  tl.innerHTML = '';
-  (data.tasks || []).forEach(t => addTaskRow(t.text, t.done));
-  // Time blocks
-  document.querySelectorAll('#time-blocks input[type="text"]').forEach(inp => {
-    inp.value = (data.timeBlocks && data.timeBlocks[inp.dataset.time]) || '';
-  });
-  // Notes
-  document.getElementById('notes').value = data.notes || '';
-  // Score
-  currentScore = data.score || 0;
-  updateScoreUI();
-  // Reflect
-  document.getElementById('reflect-notes').value = data.reflectNotes || '';
-  // Page num = count of saved days
-  updatePageNum();
+function gatherWeeklyReflect() {
+  return {
+    wins:            [0,1,2].map(i => document.getElementById(`wr-win${i}`).value),
+    incompleteTasks: [0,1,2,3,4].map(i => document.getElementById(`wr-inc${i}`).value),
+    nextWeekFocus:   [0,1,2,3,4].map(i => document.getElementById(`wr-nw${i}`).value),
+    reflect:         document.getElementById('wr-reflect').value,
+  };
 }
 
+function saveCurrentPage() {
+  if (currentPage === 0)      save(weekKey('plan'),     gatherWeeklyPlan());
+  else if (currentPage === 1) save(weekKey('overview'), gatherWeeklyOverview());
+  else if (currentPage === 9) save(weekKey('reflect'),  gatherWeeklyReflect());
+  else                        save(dayKey(PAGE_DEFS[currentPage].dayOffset), gatherDailyData());
+}
+
+let saveTimer = null;
+function schedSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveCurrentPage();
+    const ind = document.getElementById('save-indicator');
+    ind.textContent = 'saved';
+    ind.className = 'save-indicator saved';
+    setTimeout(() => { ind.textContent = 'auto-saved'; ind.className = 'save-indicator'; }, 1500);
+  }, 600);
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────────
+function renderWeeklyPlan(data) {
+  const d = data || {};
+  [0,1,2].forEach(i => {
+    const p = (d.priorities || [])[i] || {};
+    document.getElementById(`wp-p${i}-text`).value = p.text || '';
+    document.getElementById(`wp-p${i}-check`).checked = !!p.done;
+    document.getElementById(`wp-p${i}-text`).classList.toggle('done', !!p.done);
+  });
+  [0,1,2,3,4].forEach(i => {
+    const t = (d.tasks || [])[i] || {};
+    document.getElementById(`wp-t${i}-text`).value = t.text || '';
+    document.getElementById(`wp-t${i}-check`).checked = !!t.done;
+    document.getElementById(`wp-t${i}-text`).classList.toggle('done', !!t.done);
+  });
+  for (let i = 0; i < HABIT_COUNT; i++) {
+    const h = (d.habits || [])[i] || {};
+    document.getElementById(`habit-${i}-name`).value = h.name || '';
+    for (let day = 0; day < 7; day++) {
+      document.getElementById(`habit-${i}-day-${day}`).checked = !!((h.days || [])[day]);
+    }
+  }
+  document.getElementById('wp-notes').value = d.notes || '';
+}
+
+function renderWeeklyOverview(data) {
+  const d = data || {};
+  OVERVIEW_DAYS.forEach((_, i) => {
+    document.getElementById(`overview-${i}`).value = (d.days || [])[i] || '';
+  });
+}
+
+function renderDailyData(data) {
+  const d = data || {};
+  [0,1,2].forEach(i => {
+    const p = (d.priorities || [])[i] || {};
+    document.getElementById(`p${i}-text`).value = p.text || '';
+    document.getElementById(`p${i}-check`).checked = !!p.done;
+    document.getElementById(`p${i}-text`).classList.toggle('done', !!p.done);
+  });
+  const tl = document.getElementById('tasks-list');
+  tl.innerHTML = '';
+  (d.tasks || []).forEach(t => addTaskRow(t.text, t.done));
+  document.querySelectorAll('#time-blocks input[type="text"]').forEach(inp => {
+    inp.value = (d.timeBlocks && d.timeBlocks[inp.dataset.time]) || '';
+  });
+  document.getElementById('notes').value = d.notes || '';
+  currentScore = d.score || 0;
+  updateScoreUI();
+  document.getElementById('reflect-notes').value = d.reflectNotes || '';
+}
+
+function renderWeeklyReflect(data) {
+  const d = data || {};
+  [0,1,2].forEach(i => { document.getElementById(`wr-win${i}`).value = (d.wins || [])[i] || ''; });
+  [0,1,2,3,4].forEach(i => {
+    document.getElementById(`wr-inc${i}`).value = (d.incompleteTasks || [])[i] || '';
+    document.getElementById(`wr-nw${i}`).value  = (d.nextWeekFocus   || [])[i] || '';
+  });
+  document.getElementById('wr-reflect').value = d.reflect || '';
+}
+
+// ── Daily helpers ──────────────────────────────────────────────────────────────
 function addTaskRow(text = '', done = false) {
   const tl = document.getElementById('tasks-list');
   const row = document.createElement('div');
@@ -623,9 +1053,6 @@ function addTaskRow(text = '', done = false) {
   tl.appendChild(row);
 }
 
-function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
-
-let currentScore = 0;
 function updateScoreUI() {
   document.querySelectorAll('.score-circle').forEach(el => {
     el.classList.toggle('active', parseInt(el.dataset.score) <= currentScore);
@@ -638,23 +1065,64 @@ function updatePageNum() {
   document.getElementById('page-num').textContent = count;
 }
 
-let saveTimer = null;
-let saveIndicator = null;
-function schedSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    saveDay(currentDate, gatherData());
-    const ind = document.getElementById('save-indicator');
-    ind.textContent = 'saved';
-    ind.className = 'save-indicator saved';
-    setTimeout(() => {
-      ind.textContent = 'auto-saved';
-      ind.className = 'save-indicator';
-    }, 1500);
-  }, 600);
+// ── Navigation ─────────────────────────────────────────────────────────────────
+function setPage(idx) {
+  saveCurrentPage();
+  currentPage = idx;
+  const page = PAGE_DEFS[idx];
+
+  // Show correct section
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(page.section).classList.add('active');
+
+  // Update tabs
+  document.querySelectorAll('.tab').forEach((tab, i) => tab.classList.toggle('active', i === idx));
+
+  // Update title
+  document.getElementById('page-title').textContent = page.label;
+
+  // Load data
+  if (idx === 0)      renderWeeklyPlan(load(weekKey('plan')));
+  else if (idx === 1) renderWeeklyOverview(load(weekKey('overview')));
+  else if (idx === 9) renderWeeklyReflect(load(weekKey('reflect')));
+  else                renderDailyData(load(dayKey(page.dayOffset)));
+
+  updatePageNum();
 }
 
-// Priority checkboxes
+function setWeek(monday) {
+  saveCurrentPage();
+  currentMonday = monday;
+  document.getElementById('week-label').textContent = formatWeekLabel(monday);
+  setPage(currentPage);
+}
+
+// ── Events ─────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach((tab, i) => {
+  tab.addEventListener('click', () => setPage(i));
+});
+
+document.getElementById('prev-week').addEventListener('click', () => setWeek(addDays(currentMonday, -7)));
+document.getElementById('next-week').addEventListener('click', () => setWeek(addDays(currentMonday, 7)));
+
+// Weekly plan inputs
+[0,1,2].forEach(i => {
+  document.getElementById(`wp-p${i}-check`).addEventListener('change', function() {
+    document.getElementById(`wp-p${i}-text`).classList.toggle('done', this.checked);
+    schedSave();
+  });
+  document.getElementById(`wp-p${i}-text`).addEventListener('input', schedSave);
+});
+[0,1,2,3,4].forEach(i => {
+  document.getElementById(`wp-t${i}-check`).addEventListener('change', function() {
+    document.getElementById(`wp-t${i}-text`).classList.toggle('done', this.checked);
+    schedSave();
+  });
+  document.getElementById(`wp-t${i}-text`).addEventListener('input', schedSave);
+});
+document.getElementById('wp-notes').addEventListener('input', schedSave);
+
+// Daily inputs
 [0,1,2].forEach(i => {
   document.getElementById(`p${i}-check`).addEventListener('change', function() {
     document.getElementById(`p${i}-text`).classList.toggle('done', this.checked);
@@ -662,54 +1130,30 @@ function schedSave() {
   });
   document.getElementById(`p${i}-text`).addEventListener('input', schedSave);
 });
+document.getElementById('add-task-btn').addEventListener('click', () => addTaskRow());
+document.getElementById('notes').addEventListener('input', schedSave);
+document.getElementById('reflect-notes').addEventListener('input', schedSave);
 
-// Tasks
-document.getElementById('add-task-btn').addEventListener('click', () => { addTaskRow(); });
-
-// Score circles
 document.querySelectorAll('.score-circle').forEach(el => {
   el.addEventListener('click', () => {
     const s = parseInt(el.dataset.score);
-    currentScore = currentScore === s ? 0 : s;
+    currentScore = (currentScore === s) ? 0 : s;
     updateScoreUI();
     schedSave();
   });
 });
 
-// Notes
-document.getElementById('notes').addEventListener('input', schedSave);
-document.getElementById('reflect-notes').addEventListener('input', schedSave);
-
-// Date navigation
-let currentDate = todayStr();
-
-function setDate(d) {
-  // Save current before switching
-  saveDay(currentDate, gatherData());
-  currentDate = d;
-  document.getElementById('date-input').value = d;
-  renderDay(loadDay(d));
-}
-
-document.getElementById('date-input').addEventListener('change', function() {
-  if (this.value) setDate(this.value);
+// Weekly reflection inputs
+[0,1,2].forEach(i => document.getElementById(`wr-win${i}`).addEventListener('input', schedSave));
+[0,1,2,3,4].forEach(i => {
+  document.getElementById(`wr-inc${i}`).addEventListener('input', schedSave);
+  document.getElementById(`wr-nw${i}`).addEventListener('input', schedSave);
 });
-
-document.getElementById('prev-day').addEventListener('click', () => {
-  const d = new Date(currentDate + 'T12:00:00');
-  d.setDate(d.getDate() - 1);
-  setDate(d.toISOString().slice(0, 10));
-});
-
-document.getElementById('next-day').addEventListener('click', () => {
-  const d = new Date(currentDate + 'T12:00:00');
-  d.setDate(d.getDate() + 1);
-  setDate(d.toISOString().slice(0, 10));
-});
+document.getElementById('wr-reflect').addEventListener('input', schedSave);
 
 // Export
 document.getElementById('export-btn').addEventListener('click', () => {
-  saveDay(currentDate, gatherData());
+  saveCurrentPage();
   const all = {};
   Object.keys(localStorage).filter(k => k.startsWith('planner:')).forEach(k => {
     all[k.replace('planner:', '')] = JSON.parse(localStorage.getItem(k));
@@ -729,11 +1173,11 @@ document.getElementById('import-file').addEventListener('change', function() {
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
-      Object.entries(data).forEach(([date, val]) => {
-        localStorage.setItem(storageKey(date), JSON.stringify(val));
+      Object.entries(data).forEach(([key, val]) => {
+        localStorage.setItem('planner:' + key, JSON.stringify(val));
       });
-      renderDay(loadDay(currentDate));
-      alert('Import successful. ' + Object.keys(data).length + ' days loaded.');
+      setPage(currentPage);
+      alert('Import successful. ' + Object.keys(data).length + ' entries loaded.');
     } catch(err) {
       alert('Import failed: invalid JSON file.');
     }
@@ -742,10 +1186,19 @@ document.getElementById('import-file').addEventListener('change', function() {
   this.value = '';
 });
 
-// Init
+// ── Init ───────────────────────────────────────────────────────────────────────
 buildTimeBlocks();
-document.getElementById('date-input').value = currentDate;
-renderDay(loadDay(currentDate));
+buildHabitRows();
+buildOverviewDays();
+
+const today = new Date();
+currentMonday = getMondayOf(today);
+document.getElementById('week-label').textContent = formatWeekLabel(currentMonday);
+
+// Default to today's day tab
+const dow = today.getDay(); // 0=Sun, 1=Mon…
+const defaultPage = dow === 0 ? 8 : dow + 1;
+setPage(defaultPage);
 </script>
 </body>
 </html>
