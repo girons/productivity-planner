@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f5f2ec;
+    --cream-dark: #ede9e0;
+    --ink: #2a2620;
+    --ink-mid: #6b6560;
+    --ink-light: #a09b94;
+    --rule: #d8d3cb;
+    --accent: #7a6e5f;
+    --green-dot: #7a9e7e;
+    --orange-dot: #c9845a;
+    --paper: #faf8f4;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { background: var(--cream); }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 0.5px solid var(--rule);
+    padding: 3rem 3.5rem;
+    position: relative;
+  }
+
+  /* Page header */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  .date-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .date-nav button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-mid);
+    font-size: 1.1rem;
+    padding: 2px 6px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  .date-nav button:hover { color: var(--ink); }
+
+  #date-input {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--ink);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 2px 4px;
+    width: 130px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+  }
+  #date-input:focus { border-bottom-color: var(--ink); }
+
+  /* Two-column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Section labels */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-label .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green { background: var(--green-dot); }
+  .dot-orange { background: var(--orange-dot); }
+
+  .section-sublabel {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 0;
+    color: var(--ink-mid);
+    text-transform: none;
+    margin-left: 2px;
+  }
+
+  /* Priorities */
+  .priorities { margin-bottom: 2rem; }
+
+  .priority-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .priority-item:first-child { background: var(--cream-dark); padding-left: 0.5rem; border-radius: 2px 2px 0 0; }
+
+  .priority-item input[type="checkbox"],
+  .task-item input[type="checkbox"] {
+    appearance: none;
+    width: 13px;
+    height: 13px;
+    border: 1px solid var(--ink-light);
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .priority-item input[type="checkbox"]:checked,
+  .task-item input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .priority-item input[type="checkbox"]:checked::after,
+  .task-item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 3px; top: 1px;
+    width: 5px; height: 8px;
+    border: 1.5px solid white;
+    border-left: none; border-top: none;
+    transform: rotate(45deg);
+  }
+
+  .priority-item input[type="text"],
+  .task-item input[type="text"] {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--ink);
+    padding: 0;
+  }
+  .priority-item input[type="text"]::placeholder,
+  .task-item input[type="text"]::placeholder { color: var(--ink-light); }
+
+  .priority-item input[type="text"].done,
+  .task-item input[type="text"].done {
+    text-decoration: line-through;
+    color: var(--ink-light);
+  }
+
+  /* Other tasks */
+  .tasks-section { margin-bottom: 2rem; }
+  .tasks-section .section-label { margin-top: 1.5rem; }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 0;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .add-task-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: var(--ink-light);
+    padding: 0.4rem 0;
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s;
+  }
+  .add-task-btn:hover { color: var(--ink); }
+
+  .remove-task-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--rule);
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0 2px;
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+  .remove-task-btn:hover { color: var(--ink-mid); }
+
+  /* Plan (time blocks) */
+  .plan-section { }
+
+  .time-block {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    border-bottom: 0.5px solid var(--rule);
+    min-height: 26px;
+  }
+
+  .time-label {
+    font-size: 0.68rem;
+    color: var(--ink-light);
+    padding: 5px 0 3px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    align-self: start;
+    padding-top: 6px;
+  }
+
+  .time-block input[type="text"] {
+    background: none;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--ink);
+    padding: 5px 0 3px 6px;
+    width: 100%;
+  }
+  .time-block input[type="text"]::placeholder { color: var(--rule); }
+
+  /* Full-width sections */
+  .full-width { margin-bottom: 2rem; }
+
+  .notes-area {
+    width: 100%;
+    min-height: 80px;
+    background: none;
+    border: 0.5px solid var(--rule);
+    padding: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    line-height: 1.6;
+  }
+  .notes-area:focus { border-color: var(--ink-mid); }
+  .notes-area::placeholder { color: var(--ink-light); }
+
+  /* Reflect */
+  .reflect-section {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .reflect-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .score-circles {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .score-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--rule);
+    background: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .score-circle:hover { border-color: var(--orange-dot); }
+  .score-circle.active { background: var(--orange-dot); border-color: var(--orange-dot); }
+
+  .score-label {
+    color: var(--ink-light);
+    font-style: italic;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+  }
+
+  /* Data mgmt bar */
+  .data-bar {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 0.5px solid var(--rule);
+    flex-wrap: wrap;
+  }
+
+  .data-bar button, .data-bar label {
+    background: none;
+    border: 0.5px solid var(--rule);
+    color: var(--ink-mid);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 1px;
+  }
+  .data-bar button:hover, .data-bar label:hover {
+    border-color: var(--ink-mid);
+    color: var(--ink);
+  }
+
+  .save-indicator {
+    font-size: 0.72rem;
+    color: var(--ink-light);
+    font-style: italic;
+    font-family: var(--font-display);
+    margin-right: auto;
+  }
+  .save-indicator.saved { color: var(--green-dot); }
+
+  /* Page number */
+  .page-num {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 2rem;
+    font-size: 0.75rem;
+    color: var(--ink-light);
+    font-family: var(--font-display);
+    font-style: italic;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 1.5rem 1.25rem; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .plan-section { margin-top: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-title">Daily Planning</div>
+    <div class="date-nav">
+      <button id="prev-day" title="Previous day">&#8249;</button>
+      <input type="date" id="date-input">
+      <button id="next-day" title="Next day">&#8250;</button>
+    </div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- LEFT COLUMN -->
+    <div>
+      <!-- Priorities -->
+      <div class="priorities">
+        <div class="section-label">
+          <span class="dot dot-green"></span>
+          Priorities
+          <span class="section-sublabel">today's top three tasks</span>
+        </div>
+        <div id="priorities-list">
+          <div class="priority-item">
+            <input type="checkbox" id="p0-check">
+            <input type="text" id="p0-text" placeholder="First priority…">
+          </div>
+          <div class="priority-item">
+            <input type="checkbox" id="p1-check">
+            <input type="text" id="p1-text" placeholder="Second priority…">
+          </div>
+          <div class="priority-item">
+            <input type="checkbox" id="p2-check">
+            <input type="text" id="p2-text" placeholder="Third priority…">
+          </div>
+        </div>
+      </div>
+
+      <!-- Other tasks -->
+      <div class="tasks-section">
+        <div class="section-label">
+          Other Tasks
+          <span class="section-sublabel">to do today</span>
+        </div>
+        <div id="tasks-list"></div>
+        <button class="add-task-btn" id="add-task-btn">+ add task</button>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Plan -->
+    <div class="plan-section">
+      <div class="section-label">
+        <span class="dot dot-green"></span>
+        Plan
+        <span class="section-sublabel">assign time to tasks and rest</span>
+      </div>
+      <div id="time-blocks"></div>
+    </div>
+
+  </div>
+
+  <!-- Notes -->
+  <div class="full-width">
+    <div class="section-label">
+      Notes
+      <span class="section-sublabel">for the day</span>
+    </div>
+    <textarea class="notes-area" id="notes" placeholder="Notes…"></textarea>
+  </div>
+
+  <!-- Reflect -->
+  <div class="reflect-section">
+    <div class="section-label">
+      <span class="dot dot-orange"></span>
+      Reflect
+      <span class="section-sublabel">how was your day?</span>
+    </div>
+    <div class="reflect-header">
+      <div class="score-circles" id="score-circles">
+        <span class="score-circle" data-score="1"></span>
+        <span class="score-circle" data-score="2"></span>
+        <span class="score-circle" data-score="3"></span>
+        <span class="score-circle" data-score="4"></span>
+        <span class="score-circle" data-score="5"></span>
+      </div>
+      <span class="score-label" id="score-label">—</span>
+    </div>
+    <textarea class="notes-area" id="reflect-notes" placeholder="Reflections on the day…" style="min-height:60px;"></textarea>
+  </div>
+
+  <!-- Data bar -->
+  <div class="data-bar">
+    <span class="save-indicator" id="save-indicator">auto-saved</span>
+    <button id="export-btn">Export JSON</button>
+    <label for="import-file">Import JSON</label>
+    <input type="file" id="import-file" accept=".json" style="display:none;">
+  </div>
+
+  <div class="page-num" id="page-num">—</div>
+</div>
+
+<script>
+const TIME_START = '04:30';
+const TIME_END   = '22:30';
+const INTERVAL   = 30;
+
+const SCORE_LABELS = ['', 'Poor', 'Below average', 'Average', 'Good', 'Excellent'];
+
+function timeToMins(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+function minsToTime(m) {
+  return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+}
+
+function buildTimeBlocks() {
+  const container = document.getElementById('time-blocks');
+  container.innerHTML = '';
+  let cur = timeToMins(TIME_START);
+  const end = timeToMins(TIME_END);
+  while (cur <= end) {
+    const t = minsToTime(cur);
+    const row = document.createElement('div');
+    row.className = 'time-block';
+    row.innerHTML = `<span class="time-label">${t}</span><input type="text" data-time="${t}" placeholder="">`;
+    container.appendChild(row);
+    cur += INTERVAL;
+  }
+  container.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => schedSave());
+  });
+}
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function storageKey(date) { return 'planner:' + date; }
+
+function emptyDay() {
+  return {
+    priorities: [
+      { text: '', done: false },
+      { text: '', done: false },
+      { text: '', done: false }
+    ],
+    tasks: [],
+    timeBlocks: {},
+    notes: '',
+    score: 0,
+    reflectNotes: ''
+  };
+}
+
+function loadDay(date) {
+  const raw = localStorage.getItem(storageKey(date));
+  if (!raw) return emptyDay();
+  try { return JSON.parse(raw); } catch(e) { return emptyDay(); }
+}
+
+function saveDay(date, data) {
+  localStorage.setItem(storageKey(date), JSON.stringify(data));
+}
+
+function gatherData() {
+  const priorities = [0,1,2].map(i => ({
+    text: document.getElementById(`p${i}-text`).value,
+    done: document.getElementById(`p${i}-check`).checked
+  }));
+  const tasks = Array.from(document.querySelectorAll('#tasks-list .task-item')).map(el => ({
+    text: el.querySelector('input[type="text"]').value,
+    done: el.querySelector('input[type="checkbox"]').checked
+  }));
+  const timeBlocks = {};
+  document.querySelectorAll('#time-blocks input[type="text"]').forEach(inp => {
+    if (inp.value.trim()) timeBlocks[inp.dataset.time] = inp.value;
+  });
+  return {
+    priorities,
+    tasks,
+    timeBlocks,
+    notes: document.getElementById('notes').value,
+    score: currentScore,
+    reflectNotes: document.getElementById('reflect-notes').value
+  };
+}
+
+function renderDay(data) {
+  // Priorities
+  [0,1,2].forEach(i => {
+    const p = data.priorities[i] || { text: '', done: false };
+    document.getElementById(`p${i}-text`).value = p.text;
+    document.getElementById(`p${i}-check`).checked = p.done;
+    document.getElementById(`p${i}-text`).classList.toggle('done', p.done);
+  });
+  // Tasks
+  const tl = document.getElementById('tasks-list');
+  tl.innerHTML = '';
+  (data.tasks || []).forEach(t => addTaskRow(t.text, t.done));
+  // Time blocks
+  document.querySelectorAll('#time-blocks input[type="text"]').forEach(inp => {
+    inp.value = (data.timeBlocks && data.timeBlocks[inp.dataset.time]) || '';
+  });
+  // Notes
+  document.getElementById('notes').value = data.notes || '';
+  // Score
+  currentScore = data.score || 0;
+  updateScoreUI();
+  // Reflect
+  document.getElementById('reflect-notes').value = data.reflectNotes || '';
+  // Page num = count of saved days
+  updatePageNum();
+}
+
+function addTaskRow(text = '', done = false) {
+  const tl = document.getElementById('tasks-list');
+  const row = document.createElement('div');
+  row.className = 'task-item';
+  row.innerHTML = `
+    <input type="checkbox" ${done ? 'checked' : ''}>
+    <input type="text" value="${escHtml(text)}" placeholder="Task…">
+    <button class="remove-task-btn" title="Remove">×</button>`;
+  const cb = row.querySelector('input[type="checkbox"]');
+  const tx = row.querySelector('input[type="text"]');
+  if (done) tx.classList.add('done');
+  cb.addEventListener('change', () => { tx.classList.toggle('done', cb.checked); schedSave(); });
+  tx.addEventListener('input', schedSave);
+  row.querySelector('.remove-task-btn').addEventListener('click', () => { row.remove(); schedSave(); });
+  tl.appendChild(row);
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+let currentScore = 0;
+function updateScoreUI() {
+  document.querySelectorAll('.score-circle').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.score) <= currentScore);
+  });
+  document.getElementById('score-label').textContent = currentScore ? SCORE_LABELS[currentScore] : '—';
+}
+
+function updatePageNum() {
+  const count = Object.keys(localStorage).filter(k => k.startsWith('planner:')).length;
+  document.getElementById('page-num').textContent = count;
+}
+
+let saveTimer = null;
+let saveIndicator = null;
+function schedSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveDay(currentDate, gatherData());
+    const ind = document.getElementById('save-indicator');
+    ind.textContent = 'saved';
+    ind.className = 'save-indicator saved';
+    setTimeout(() => {
+      ind.textContent = 'auto-saved';
+      ind.className = 'save-indicator';
+    }, 1500);
+  }, 600);
+}
+
+// Priority checkboxes
+[0,1,2].forEach(i => {
+  document.getElementById(`p${i}-check`).addEventListener('change', function() {
+    document.getElementById(`p${i}-text`).classList.toggle('done', this.checked);
+    schedSave();
+  });
+  document.getElementById(`p${i}-text`).addEventListener('input', schedSave);
+});
+
+// Tasks
+document.getElementById('add-task-btn').addEventListener('click', () => { addTaskRow(); });
+
+// Score circles
+document.querySelectorAll('.score-circle').forEach(el => {
+  el.addEventListener('click', () => {
+    const s = parseInt(el.dataset.score);
+    currentScore = currentScore === s ? 0 : s;
+    updateScoreUI();
+    schedSave();
+  });
+});
+
+// Notes
+document.getElementById('notes').addEventListener('input', schedSave);
+document.getElementById('reflect-notes').addEventListener('input', schedSave);
+
+// Date navigation
+let currentDate = todayStr();
+
+function setDate(d) {
+  // Save current before switching
+  saveDay(currentDate, gatherData());
+  currentDate = d;
+  document.getElementById('date-input').value = d;
+  renderDay(loadDay(d));
+}
+
+document.getElementById('date-input').addEventListener('change', function() {
+  if (this.value) setDate(this.value);
+});
+
+document.getElementById('prev-day').addEventListener('click', () => {
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate() - 1);
+  setDate(d.toISOString().slice(0, 10));
+});
+
+document.getElementById('next-day').addEventListener('click', () => {
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate() + 1);
+  setDate(d.toISOString().slice(0, 10));
+});
+
+// Export
+document.getElementById('export-btn').addEventListener('click', () => {
+  saveDay(currentDate, gatherData());
+  const all = {};
+  Object.keys(localStorage).filter(k => k.startsWith('planner:')).forEach(k => {
+    all[k.replace('planner:', '')] = JSON.parse(localStorage.getItem(k));
+  });
+  const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `planner-backup-${todayStr()}.json`;
+  a.click();
+});
+
+// Import
+document.getElementById('import-file').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      Object.entries(data).forEach(([date, val]) => {
+        localStorage.setItem(storageKey(date), JSON.stringify(val));
+      });
+      renderDay(loadDay(currentDate));
+      alert('Import successful. ' + Object.keys(data).length + ' days loaded.');
+    } catch(err) {
+      alert('Import failed: invalid JSON file.');
+    }
+  };
+  reader.readAsText(file);
+  this.value = '';
+});
+
+// Init
+buildTimeBlocks();
+document.getElementById('date-input').value = currentDate;
+renderDay(loadDay(currentDate));
+</script>
+</body>
+</html>
